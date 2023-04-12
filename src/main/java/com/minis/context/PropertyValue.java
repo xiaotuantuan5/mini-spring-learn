@@ -1,14 +1,29 @@
 package com.minis.context;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class PropertyValue {
+    private final String type;
     private final String name;
     private final Object value;
+    private final boolean isRef;
+
     public PropertyValue(String name, Object value) {
+        this("", name, value, false);
+    }
+
+    public PropertyValue(String type, String name, Object value) {
+        this(type, name, value, false);
+    }
+
+    public PropertyValue(String type, String name, Object value, boolean isRef) {
+        this.type = type;
         this.name = name;
         this.value = value;
+        this.isRef = isRef;
     }
-    //省略getter
+    public boolean getIsRef() {
+        return isRef;
+    }
 }
