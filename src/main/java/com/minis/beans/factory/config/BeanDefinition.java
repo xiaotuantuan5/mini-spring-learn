@@ -1,6 +1,5 @@
 package com.minis.beans.factory.config;
 
-import com.minis.context.ArgumentValues;
 import com.minis.context.PropertyValues;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +11,7 @@ public class BeanDefinition {
     String SCOPE_PROTOTYPE = "prototype";
     private boolean lazyInit = true;
     private String[] dependsOn;
-    private ArgumentValues constructorArgumentValues;
+    private ConstructorArgumentValues constructorArgumentValues;
     private PropertyValues propertyValues;
     private String initMethodName;
     private volatile Object beanClass;
@@ -31,4 +30,5 @@ public class BeanDefinition {
     public boolean isPrototype() {
         return SCOPE_PROTOTYPE.equals(scope);
     }
+
 }

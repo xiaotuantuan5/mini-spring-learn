@@ -1,9 +1,10 @@
 package com.minis.beans.factory.xml;
 
 import com.minis.beans.factory.config.BeanDefinition;
-import com.minis.beans.SimpleBeanFactory;
-import com.minis.context.ArgumentValue;
-import com.minis.context.ArgumentValues;
+import com.minis.beans.factory.support.AbstractBeanFactory;
+import com.minis.beans.factory.support.SimpleBeanFactory;
+import com.minis.beans.factory.config.ConstructorArgumentValue;
+import com.minis.beans.factory.config.ConstructorArgumentValues;
 import com.minis.context.PropertyValue;
 import com.minis.context.PropertyValues;
 import com.minis.core.Resource;
@@ -14,10 +15,10 @@ import java.util.List;
 
 
 public class XmlBeanDefinitionReader {
-    SimpleBeanFactory simpleBeanFactory;
+    AbstractBeanFactory abstractBeanFactory;
 
-    public XmlBeanDefinitionReader(SimpleBeanFactory simpleBeanFactory) {
-        this.simpleBeanFactory = simpleBeanFactory;
+    public XmlBeanDefinitionReader(AbstractBeanFactory abstractBeanFactory) {
+        this.abstractBeanFactory = abstractBeanFactory;
     }
 
     public void loadBeanDefinitions(Resource resource) {
@@ -49,18 +50,18 @@ public class XmlBeanDefinitionReader {
             }
             beanDefinition.setPropertyValues(PVS); //处理构造器参数
             List<Element> constructorElements = element.elements("constructor-arg");
-            ArgumentValues AVS = new ArgumentValues();
+            ConstructorArgumentValues AVS = new ConstructorArgumentValues();
             for (Element e : constructorElements) {
                 String aType = e.attributeValue("type");
                 String aName = e.attributeValue("name");
                 String aValue = e.attributeValue("value");
-                AVS.addArgumentValue(new ArgumentValue(aValue, aType, aName));
+                AVS.addConstructorArgumentValue(new ConstructorArgumentValue(aValue, aType, aName));
             }
             beanDefinition.setConstructorArgumentValues(AVS);
             //长度和refs相同
             String[] refArray = refs.toArray(new String[0]);
             beanDefinition.setDependsOn(refArray);
-            this.simpleBeanFactory.registerBeanDefinition(beanID, beanDefinition);
+            this.abstractBeanFactory.registerBeanDefinition(beanID, beanDefinition);
         }
     }
 }

@@ -5,7 +5,6 @@ import lombok.Data;
 
 public class AServiceImpl implements AService {
     private String name;
-
     private int level;
     private String property1;
     private String property2;
