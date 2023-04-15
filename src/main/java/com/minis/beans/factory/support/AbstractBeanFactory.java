@@ -1,6 +1,6 @@
 package com.minis.beans.factory.support;
 
-import com.minis.beans.BeanFactory;
+import com.minis.beans.factory.BeanFactory;
 import com.minis.beans.BeansException;
 import com.minis.beans.factory.config.BeanDefinition;
 import com.minis.beans.factory.config.ConstructorArgumentValue;
@@ -16,11 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry
-        implements BeanFactory, BeanDefinitionRegistry {
-    private Map<String, BeanDefinition> beanDefinitionMap = new
-            ConcurrentHashMap<>(256);
-    private List<String> beanDefinitionNames = new ArrayList<>();
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, BeanDefinitionRegistry {
+    protected Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
+    protected List<String> beanDefinitionNames = new ArrayList<>();
     private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
 
     public AbstractBeanFactory() {
@@ -51,14 +49,14 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry
                 this.registerBean(beanName, singleton);
                 // 进行beanpostprocessor处理
                 // step 1: postProcessBeforeInitialization
-                applyBeanPostProcessorBeforeInitialization(singleton, beanName);
+                applyBeanPostProcessorsBeforeInitialization(singleton, beanName);
                 // step 2: init-method
                 if (beanDefinition.getInitMethodName() != null &&
                         !beanDefinition.equals("")) {
                     invokeInitMethod(beanDefinition, singleton);
                 }
                 // step 3: postProcessAfterInitialization
-                applyBeanPostProcessorAfterInitialization(singleton, beanName);
+                applyBeanPostProcessorsAfterInitialization(singleton, beanName);
             }
         }
 
@@ -186,8 +184,8 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry
                 } catch (Exception e) {
 
                 }
-            }else {
-                obj=clz.newInstance();
+            } else {
+                obj = clz.newInstance();
             }
         } catch (Exception e) {
 
@@ -234,12 +232,12 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry
                 } else {//is ref, create the dependent beans
                     try {
                         paramTypes[0] = Class.forName(pType);
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                     try {//再次调用getBean创建ref的bean实例
                         paramValues[0] = getBean((String) pValue);
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
@@ -248,19 +246,19 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry
                 Method method = null;
                 try {
                     method = clz.getMethod(methodName, paramTypes);
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
                 try {
                     method.invoke(obj, paramValues);
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
             }
         }
     }
 
-    abstract public Object applyBeanPostProcessorBeforeInitialization(Object existingBean, String beanName) throws BeansException;
+    abstract public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException;
 
-    abstract public Object applyBeanPostProcessorAfterInitialization(Object existingBean, String beanName) throws BeansException;
+    abstract public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException;
 }
